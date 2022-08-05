@@ -3,6 +3,8 @@ import * as path from "path";
 import TelegramBot from 'node-telegram-bot-api';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -12,9 +14,9 @@ const __dirname = dirname(__filename)
 app.use(express.static(path.join(__dirname, "build")));
 app.use(express.static("public"));
 
-app.listen(5000)
+app.listen(5000);
 
-const token = '5585039873:AAFH3BpaH0G2CnlAflxcpN1wS8pgGmBJh2I';
+const token = process.env.TOKEN;
 const bot = new TelegramBot(token, {polling: true});
 
 const inlineWebAppLink = {
@@ -23,10 +25,11 @@ const inlineWebAppLink = {
         keyboard: [
             [
                 {
+                    one_time_keyboard: true,
                     type: 'web_app',
                     text: 'web app',
                     web_app: {
-                        url: 'https://8361-82-151-212-166.eu.ngrok.io'
+                        url: process.env.WEB_APP,
                     }
                 }
             ],
@@ -183,7 +186,7 @@ bot.on('message', (msg) => {
             ...inlineWebAppLink
         });
     } else if (msg.text === '/show_web_app_button') {
-        bot.sendMessage(chatId, ``, {
+        bot.sendMessage(chatId, "Вы можете открыть web app", {
             parse_mode: 'html',
             ...inlineWebAppLink
         });
